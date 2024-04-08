@@ -2,6 +2,8 @@
 
 require_once("header.php");
 
+$movie_id = !empty($_GET['movie-id']) ? $_GET['movie-id'] : 1;
+
 $sql = "SELECT 
 m.movie_id,
 m.title,
@@ -21,6 +23,7 @@ LEFT JOIN movie_genre mg ON m.movie_id = mg.movies_id
 LEFT JOIN genres g ON mg.genre_id = g.genre_id
 LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
 LEFT JOIN actors a ON am.actor_id = a.actor_id
+WHERE m.movie_id = $movie_id
 GROUP BY 
 m.movie_id
 ORDER BY 
