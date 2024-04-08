@@ -91,8 +91,8 @@ require_once ("connection.php");
             Cinemas
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
-            <a class="dropdown-item" href="Cinema-Coolock.html">Galaxy Coolock</a>
-            <a class="dropdown-item" href="Cinema-Rathmines.html">Galaxy Rathmines</a>
+            <a class="dropdown-item" href="Cinema-Coolock.php">Galaxy Coolock</a>
+            <a class="dropdown-item" href="Cinema-Rathmines.php">Galaxy Rathmines</a>
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -101,8 +101,8 @@ require_once ("connection.php");
             Movies
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
-            <a class="dropdown-item" href="allMovies.html">Available movies</a>
-            <a class="dropdown-item" href="upcomingMovies.html">Comming soon</a>
+            <a class="dropdown-item" href="all-movies.php">Available movies</a>
+            <a class="dropdown-item" href="upcoming-movies.php">Comming soon</a>
           </div>
         </li>
         <!-- login, sign in  and search button-->

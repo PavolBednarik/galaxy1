@@ -8,7 +8,7 @@ $sql = "SELECT
 m.movie_id,
 m.title,
 m.synopsis,
-m.release_date,
+m.release_date, 
 m.runtime,
 m.poster,
 m.picture1,
@@ -16,13 +16,17 @@ m.picture2,
 m.picture3,
 m.youtube_id,
 GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres,
-GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors
+GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors,
+GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ', ') AS cinema
+
 FROM 
 movies m
 LEFT JOIN movie_genre mg ON m.movie_id = mg.movies_id
 LEFT JOIN genres g ON mg.genre_id = g.genre_id
 LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
 LEFT JOIN actors a ON am.actor_id = a.actor_id
+LEFT JOIN cinema_movies cm ON m.movie_id = cm.movies_id  
+LEFT JOIN cinema c ON cm.cinema_id = c.cinema_id
 WHERE m.movie_id = $movie_id
 GROUP BY 
 m.movie_id
@@ -33,6 +37,10 @@ $movie = $row = $result->fetch_assoc();
 $movie_json = json_encode($movie);
 
 ?>
+<br>
+<br>
+<br>
+
  <div class="row">
       <div class="col-md-5">
         <a href="#" id="movie-poster-link" data-lightbox="gallery">
@@ -43,19 +51,23 @@ $movie_json = json_encode($movie);
         <h3 class="text-light text-end" id="movie-title"></h3>
         <p class="text-light text-end">
           <span class="badge bg-secondary" id="movie-genre"></span>
-          <span class="badge bg-secondary" id="movie-year"></span>
         </p>
         <p class="text-light text-end" id="movie-synopsis">
         </p>
         <p class="text-light text-end">
-          <span class="badge bg-secondary" id="movie-time"></span>
-          <span class="badge bg-secondary" id="movie-actor"></span>
+        <span class="badge bg-secondary" id="movie-actor"></span>
         </p>
-        <p class="text-light text-end">Available at:
+        <p class="text-light text-end">
+        <span class="badge bg-secondary" id="movie-year"></span>
+        </p>
+        <p class="text-light text-end">
+          <span class="badge bg-secondary" id="movie-time"></span>
+        </p>
+        <p class="text-light text-end">
           <span class="badge bg-secondary" id="movie-cinema"></span>
         </p>
         <div class="d-flex align-items-center">
-          <a href="booking.php" class="btn btn-primary">Book now</a>
+          <a href="booking.php" class="btn btn-primary" id="book-now-btn">Book now</a>
         </div>
       </div>
 
@@ -109,6 +121,7 @@ $movie_json = json_encode($movie);
       document.getElementById('movie-genre').textContent = `Genre: ${movie.genres}`;
       document.getElementById('movie-year').textContent = `Year: ${new Date(movie.release_date).getFullYear()}`;
       document.getElementById('movie-time').textContent = `${movie.runtime} minutes`;
+      document.getElementById('movie-cinema').textContent = `Available at: ${movie.cinema}`;
       document.getElementById('movie-poster-link').setAttribute("href", movie.poster);
       document.getElementById('movie-poster').setAttribute("src", movie.poster);
       document.getElementById('movie-video').setAttribute("src", "https://www.youtube.com/embed/" + movie.youtube_id);
@@ -118,10 +131,15 @@ $movie_json = json_encode($movie);
       document.getElementById('movie-gallery-2').setAttribute("src", movie.picture2);
       document.getElementById('movie-gallery-link-3').setAttribute("href", movie.picture3);
       document.getElementById('movie-gallery-3').setAttribute("src", movie.picture3);
+      if (movie.cinema) {
+      document.getElementById('movie-cinema').textContent = `Available at: ${movie.cinema}`;
+    } else {
+      document.getElementById('movie-cinema').textContent = 'Cinema information avalable soon';
+    }
       const releaseDate = new Date(movie.release_date);
   const today = new Date();
   if (releaseDate > today) {
-    document.querySelector('a.btn-primary').style.display = 'none';
+    document.getElementById('book-now-btn').style.display = 'none';
     }
   }
   </script>
