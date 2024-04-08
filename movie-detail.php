@@ -1,6 +1,6 @@
 <?php
 
-require_once ("header.php");
+require_once("header.php");
 
 $sql = "SELECT 
 m.movie_id,
@@ -26,12 +26,8 @@ m.movie_id
 ORDER BY 
 m.movie_id;";
 $result = $conn->query($sql);
-$all_movies = array(); // Initialize an empty array to store all movies
-while($row = $result->fetch_assoc()) {
-    $all_movies[] = $row; // Append each movie row to the array
-}
-$all_movies_json = json_encode($all_movies);
-//echo $all_movies_json;
+$movie = $row = $result->fetch_assoc();
+$movie_json = json_encode($movie);
 
 ?>
  <div class="row">
@@ -56,7 +52,7 @@ $all_movies_json = json_encode($all_movies);
           <span class="badge bg-secondary" id="movie-cinema"></span>
         </p>
         <div class="d-flex align-items-center">
-          <a href="booking.html" class="btn btn-primary">Book now</a>
+          <a href="booking.php" class="btn btn-primary">Book now</a>
         </div>
       </div>
 
@@ -70,7 +66,7 @@ $all_movies_json = json_encode($all_movies);
       <div class="col-md-6 offset-md-3">
         <div class="ratio ratio-16x9 mw-100">
           <iframe id="movie-video" class="mw-100" width="560" height="315"
-            src="https://www.youtube.com/embed/U2Qp5pL3ovA?si=_Bz9Zy2-MpQIArWz" title="YouTube video player"
+            src="https://www.youtube.com/embed/" title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen></iframe>
@@ -100,46 +96,30 @@ $all_movies_json = json_encode($all_movies);
   </div>
   <br>
   <script>
-    
-  var urlParams = new URLSearchParams(window.location.search);
-    var movieId = parseInt(urlParams.get('movie-id'));
+    let movie = <?php echo $movie_json; ?>;
 
-    let data = <?php $all_movies_json; ?>;
-    // Fetch movie data from 'movies1.json'
-    fetch('http://localhost/web%20development/movie-detail.php?movie-id=' + movieId)
-      .then(response => response.json())
-      .then(data => {
-        // Find the movie with the matching ID
-        const movie = data.find(m => m.movie_id === movieId);
-        console.log(movie);
-        if (movie) {
-          // Populate various elements on the page with movie details
-          document.getElementById('movie-title').textContent = movie.title;
-          document.getElementById('movie-synopsis').textContent = movie.synopsis;
-          document.getElementById('movie-actor').textContent = `Actor: ${movie.star}`;
-          document.getElementById('movie-genre').textContent = `Genre: ${movie.genres.join(', ')}`;
-          document.getElementById('movie-year').textContent = `Year: ${movie.year}`;
-          document.getElementById('movie-time').textContent = `${movie.runtime} minutes`;
-          document.getElementById('movie-poster-link').setAttribute("href", movie.poster);
-          document.getElementById('movie-poster').setAttribute("src", movie.poster);
-          document.getElementById('movie-video').setAttribute("src", "https://www.youtube.com/embed/" + movie.video.youtube_id);
-          document.getElementById('movie-gallery-link-1').setAttribute("href", movie.picture1);
-          document.getElementById('movie-gallery-1').setAttribute("src", movie.picture1);
-          document.getElementById('movie-gallery-link-2').setAttribute("href", movie.picture2);
-          document.getElementById('movie-gallery-2').setAttribute("src", movie.picture2);
-          document.getElementById('movie-gallery-link-3').setAttribute("href", movie.picture3);
-          document.getElementById('movie-gallery-3').setAttribute("src", movie.picture3);
-        }
+    if (movie) {
+      // Populate various elements on the page with movie details
+      document.getElementById('movie-title').textContent = movie.title;
+      document.getElementById('movie-synopsis').textContent = movie.synopsis;
+      document.getElementById('movie-actor').textContent = `Actor: ${movie.actors}`;
+      document.getElementById('movie-genre').textContent = `Genre: ${movie.genres}`;
+      document.getElementById('movie-year').textContent = `Year: ${new Date(movie.release_date).getFullYear()}`;
+      document.getElementById('movie-time').textContent = `${movie.runtime} minutes`;
+      document.getElementById('movie-poster-link').setAttribute("href", movie.poster);
+      document.getElementById('movie-poster').setAttribute("src", movie.poster);
+      document.getElementById('movie-video').setAttribute("src", "https://www.youtube.com/embed/" + movie.youtube_id);
+      document.getElementById('movie-gallery-link-1').setAttribute("href", movie.picture1);
+      document.getElementById('movie-gallery-1').setAttribute("src", movie.picture1);
+      document.getElementById('movie-gallery-link-2').setAttribute("href", movie.picture2);
+      document.getElementById('movie-gallery-2').setAttribute("src", movie.picture2);
+      document.getElementById('movie-gallery-link-3').setAttribute("href", movie.picture3);
+      document.getElementById('movie-gallery-3').setAttribute("src", movie.picture3);
+    }
+  </script>
 
-      })
-      .catch(error => {
-        // Handle errors if the fetch operation fails
-        console.log("moMovie id " + movieId + " wasn't found");
-      }
-      );
+<?php
 
-  <?php
-
-require_once ("footer.php");
+require_once("footer.php");
 
 ?>
