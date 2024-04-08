@@ -9,13 +9,14 @@
       <div class="col-4"></div>
     </div>
   </div>
-
+</div>
 
 <footer class="blog-footer">
     <p>Galaxy Cinema all right reserved.</p>
     <a href="#">Back to top</a>
     </p>
   </footer>
+  
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
     integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
     crossorigin="anonymous"></script>

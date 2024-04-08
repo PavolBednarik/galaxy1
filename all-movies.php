@@ -2,6 +2,7 @@
 
 require_once ("header.php");
 
+
 $sql = "SELECT 
 m.movie_id,
 m.title,
@@ -21,10 +22,12 @@ LEFT JOIN movie_genre mg ON m.movie_id = mg.movies_id
 LEFT JOIN genres g ON mg.genre_id = g.genre_id
 LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
 LEFT JOIN actors a ON am.actor_id = a.actor_id
+WHERE
+  m.release_date < CURDATE() 
 GROUP BY 
 m.movie_id
 ORDER BY 
-m.movie_id;";
+m.movie_id;";;
 $result = $conn->query($sql);
 $all_movies = array(); // Initialize an empty array to store all movies
 while($row = $result->fetch_assoc()) {
@@ -88,8 +91,7 @@ $all_movies_json = json_encode($all_movies);
 movieClone.querySelector('#movie-actor').textContent = movie.actors;
          movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
          movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
-         movieClone.querySelector('#movie-link').setAttribute('href', `movie-detail.php?movie-id=${movie.movie_id
-           }`);
+         movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id}`);
         movieClone.style.display = "flex";
         // Append the populated template to the container
         container.appendChild(movieClone);
