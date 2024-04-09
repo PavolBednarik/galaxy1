@@ -3,6 +3,11 @@
 require_once("connection.php");
 require_once("helpers.php");
 
+// Start session if not already started to store error messages
+if (!session_id()) {
+    session_start();
+}
+
 ?>
 
 <!doctype html>
@@ -148,7 +153,8 @@ require_once("helpers.php");
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="sign-in-form" name="myForm" onsubmit="return validateForm()">
+                            <!-- <form id="sign-in-form" name="myForm" action="insert-user.php" method="post" onsubmit="return validateForm()"> -->
+                            <form id="sign-in-form" name="myForm" action="insert-user.php" method="post">
                                 <div class="form-group">
                                     <label for="inputName" class="formdesign">Name:</label>
                                     <input type="text" class="form-control" id="inputName" name="fname" required="">
@@ -196,83 +202,24 @@ require_once("helpers.php");
                                     <span id="captchaText"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary but">Submit</button>
+
+                                <?php
+
+                                // Display session errors if any
+                                if (isset($_SESSION['error'])) {
+                                    echo "<div class='alert alert-danger mt-3' role='alert'>" . $_SESSION['error'] . "</div>";
+                                }
+
+                                // Display success message if any
+                                if (isset($_SESSION['success'])) {
+                                    echo "<div class='alert alert-success mt-3' role='alert'>" . $_SESSION['success'] . "</div>";
+                                }
+                                ?>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script>
-            // Generate a random CAPTCHA code
-            function generateCaptcha() {
-                var captcha = '';
-                var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                for (var i = 0; i < 6; i++) {
-                    captcha += characters.charAt(Math.floor(Math.random() * characters.length));
-                }
-                return captcha;
-            }
-
-            // Populate the CAPTCHA text and store it in session storage
-            var captchaText = generateCaptcha();
-            document.getElementById('captchaText').textContent = captchaText;
-            sessionStorage.setItem('captcha', captchaText);
-
-            // Validate the CAPTCHA on form submission
-            document.getElementById('sign-in-form').addEventListener('submit', function(event) {
-                var userInput = document.getElementById('captcha').value;
-                var storedCaptcha = sessionStorage.getItem('captcha');
-                if (userInput !== storedCaptcha) {
-                    alert('CAPTCHA incorrect!');
-                    event.preventDefault(); // Prevent form submission
-                }
-            });
-
-            function validateForm() {
-                var name = document.getElementById('inputName').value.trim();
-                var surname = document.getElementById('inputSurname').value.trim();
-                var username = document.getElementById('inputUsername').value.trim();
-                var email = document.getElementById('inputEmail').value.trim();
-                var phone = document.getElementById('inputPhone').value.trim();
-                var password = document.getElementById('inputPassword').value;
-                var confirmPassword = document.getElementById('confirmPassword').value;
-
-                // Check if any field is empty
-                if (name === '' || surname === '' || email === '' || phone === '' || password === '' || confirmPassword === '') {
-                    alert('Please fill in all fields.');
-                    return false;
-                }
-
-                // Check if email is valid
-                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(email)) {
-                    alert('Please enter a valid email address.');
-                    return false;
-                }
-                var phonePattern = /^0\d{9}$/;
-                if (!phonePattern.test(phone)) {
-                    alert('Please enter a valid Irish mobile phone number starting with "0" and consisting of exactly 10 digits.');
-                    return false;
-                }
-
-                // Check if passwords match
-                if (password !== confirmPassword) {
-                    alert('Passwords do not match.');
-                    return false;
-                }
-
-                // Check if password meets criteria (e.g., minimum length)
-                if (password.length < 8) {
-                    alert('Password must be at least 8 characters long.');
-                    return false;
-                }
-
-                // If all validation passes, return true to submit the form
-                return true;
-            }
-
-           
-        </script>
     </div>
     <div class="container">

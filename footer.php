@@ -1,3 +1,10 @@
+<?php
+
+// Unset session variables
+unset($_SESSION['error']);
+unset($_SESSION['success']);
+
+?>
 <div class="row">
       <div class="col"></div>
       <div class="col"></div>
@@ -85,6 +92,79 @@
         autocompleteDropdown.style.display = 'none';
       }
     });
+
+    // Generate a random CAPTCHA code
+        function generateCaptcha() {
+            var captcha = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            for (var i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return captcha;
+        }
+
+        // Populate the CAPTCHA text and store it in session storage
+        var captchaText = generateCaptcha();
+        document.getElementById('captchaText').textContent = captchaText;
+        sessionStorage.setItem('captcha', captchaText);
+
+        // Validate the CAPTCHA on form submission
+        document.getElementById('sign-in-form').addEventListener('submit', function(event) {
+            var userInput = document.getElementById('captcha').value;
+            var storedCaptcha = sessionStorage.getItem('captcha');
+            if (userInput !== storedCaptcha) {
+                alert('CAPTCHA incorrect!');
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+
+        function validateForm() {
+            var name = document.getElementById('inputName').value.trim();
+            var surname = document.getElementById('inputSurname').value.trim();
+            var username = document.getElementById('inputUsername').value.trim();
+            var email = document.getElementById('inputEmail').value.trim();
+            var phone = document.getElementById('inputPhone').value.trim();
+            var password = document.getElementById('inputPassword').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Check if any field is empty
+            if (name === '' || surname === '' || email === '' || phone === '' || password === '' || confirmPassword === '') {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+            // Check if email is valid
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+            var phonePattern = /^0\d{9}$/;
+            if (!phonePattern.test(phone)) {
+                alert('Please enter a valid Irish mobile phone number starting with "0" and consisting of exactly 10 digits.');
+                return false;
+            }
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return false;
+            }
+
+            // Check if password meets criteria (e.g., minimum length)
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long.');
+                return false;
+            }
+
+            // If all validation passes, return true to submit the form
+            return true;
+        }
+        
+        // If session contains error or success message, open sign in modal
+        if ('<?php echo isset($_SESSION['error']) || isset($_SESSION['success']); ?>') {
+            $('#signInModal').modal('show');
+        }
   </script>
 </body>
 
