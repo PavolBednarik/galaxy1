@@ -1,32 +1,8 @@
 <?php
 
-require_once ("header.php");
+require_once("header.php");
 
-$sql = "SELECT 
-m.movie_id,
-m.title,
-m.release_date,
-m.poster,
-GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres,
-GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors
-FROM 
-movies m
-LEFT JOIN movie_genre mg ON m.movie_id = mg.movies_id
-LEFT JOIN genres g ON mg.genre_id = g.genre_id
-LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
-LEFT JOIN actors a ON am.actor_id = a.actor_id
-WHERE
-  m.release_date > CURDATE()
-GROUP BY 
-m.movie_id
-ORDER BY 
-m.movie_id;";
-$result = $conn->query($sql);
-$all_movies = array(); // Initialize an empty array to store all movies
-while($row = $result->fetch_assoc()) {
-    $all_movies[] = $row; // Append each movie row to the array
-}
-$all_movies_json = json_encode($all_movies);
+$all_movies_json = get_upcoming_movies_json();
 
 ?>
 <br>
@@ -96,53 +72,10 @@ $all_movies_json = json_encode($all_movies);
         container.appendChild(movieClone);
       });
     }
-
-    // Event listener for the search button
-    document.querySelector('#search-btn').addEventListener('click', function (event) {
-      event.preventDefault(); // Prevent form submission
-      // Get the search query from the input field
-      const searchQuery = document.querySelector('input[type="search"]').value.toLowerCase();
-      // Filter movies based on the search query
-      const filteredMovies = moviesData.filter(movie => {
-        return movie.title.toLowerCase().includes(searchQuery) || movie.star.toLowerCase().includes(searchQuery) || movie.genres.some(genre => genre.toLowerCase().includes(searchQuery));
-      });
-      // Render filtered movies
-      renderMovies(filteredMovies);
-    });
-
-    // Event listener for search field input
-    document.querySelector('#search-field').addEventListener('input', function (event) {
-      // Get the search query from the input field
-      const searchQuery = event.target.value.toLowerCase();
-      const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
-
-      // Filter movies based on search query
-      const matchedMovies = moviesData.filter(movie => movie.title.toLowerCase().includes(searchQuery));
-
-      // Populate autocomplete dropdown with matched movie titles
-      autocompleteDropdown.innerHTML = '';
-      matchedMovies.forEach(movie => {
-        const autocompleteItem = document.createElement('div');
-        autocompleteItem.classList.add('autocomplete-item');
-        autocompleteItem.textContent = movie.title;
-        autocompleteItem.addEventListener('click', function () {
-          document.querySelector('#search-field').value = movie.title;
-          autocompleteDropdown.style.display = 'none';
-        });
-        autocompleteDropdown.appendChild(autocompleteItem);
-      });
-
-      // Show/hide autocomplete dropdown based on search query length
-      if (searchQuery.length > 0) {
-        autocompleteDropdown.style.display = 'block';
-      } else {
-        autocompleteDropdown.style.display = 'none';
-      }
-    });
   </script>
 
 <?php
 
-require_once ("footer.php");
+require_once("footer.php");
 
 ?>
