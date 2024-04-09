@@ -2,8 +2,6 @@
 
 require_once("header.php");
 
-$all_movies_json = get_upcoming_movies_json();
-
 ?>
 <br>
 <br>
@@ -47,7 +45,7 @@ $all_movies_json = get_upcoming_movies_json();
     // Get the template for displaying each movie
     const movieTemplate = document.getElementById("movie-template");
     // Initialize an empty array to store movie data
-    let moviesData = <?php echo $all_movies_json; ?>;
+    let moviesData = <?php echo get_upcoming_movies(); ?>;
     renderMovies(moviesData);
    
     // Function to render movies based on the provided data
@@ -62,11 +60,15 @@ $all_movies_json = get_upcoming_movies_json();
         movieClone.querySelector('#movie-title').textContent = movie.title;
         movieClone.querySelector('#movie-genre').textContent = movie.genres;
         movieClone.querySelector('#movie-actor').textContent = movie.actors;
-        movieClone.querySelector('#release-date').textContent = movie.release_date;
-         movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
-         movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
-         movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id
-           }`);
+        movieClone.querySelector('#release-date').textContent = new Date(movie.release_date).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+
+        movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
+        movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
+        movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id}`);
         movieClone.style.display = "flex";
         // Append the populated template to the container
         container.appendChild(movieClone);

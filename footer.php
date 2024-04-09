@@ -29,7 +29,7 @@
 
     <script>
     // Initialize an empty array to store movie data
-    const searchMoviesData = <?php echo get_all_movies_json(); ?>;
+    const searchMoviesData = <?php echo get_all_movies(); ?>;
 
     // Event listener for the search button
     document.querySelector('#search-btn').addEventListener('click', function (event) {
@@ -40,7 +40,7 @@
       const filteredMovies = searchMoviesData.filter(movie => {
         return movie.title.toLowerCase().includes(searchQuery);
       });
-      
+
       // Render filtered movies
       renderMovies(filteredMovies);
     });

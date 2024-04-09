@@ -4,38 +4,6 @@ require_once("header.php");
 
 $movie_id = !empty($_GET['movie-id']) ? $_GET['movie-id'] : 1;
 
-$sql = "SELECT 
-m.movie_id,
-m.title,
-m.synopsis,
-m.release_date, 
-m.runtime,
-m.poster,
-m.picture1,
-m.picture2,
-m.picture3,
-m.youtube_id,
-GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres,
-GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors,
-GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ', ') AS cinema
-
-FROM 
-movies m
-LEFT JOIN movie_genre mg ON m.movie_id = mg.movies_id
-LEFT JOIN genres g ON mg.genre_id = g.genre_id
-LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
-LEFT JOIN actors a ON am.actor_id = a.actor_id
-LEFT JOIN cinema_movies cm ON m.movie_id = cm.movies_id  
-LEFT JOIN cinema c ON cm.cinema_id = c.cinema_id
-WHERE m.movie_id = $movie_id
-GROUP BY 
-m.movie_id
-ORDER BY 
-m.movie_id;";
-$result = $conn->query($sql);
-$movie = $row = $result->fetch_assoc();
-$movie_json = json_encode($movie);
-
 ?>
 <br>
 <br>
@@ -111,7 +79,7 @@ $movie_json = json_encode($movie);
   </div>
   <br>
   <script>
-    let movie = <?php echo $movie_json; ?>;
+    let movie = <?php echo get_movie($movie_id); ?>;
 
     if (movie) {
       // Populate various elements on the page with movie details

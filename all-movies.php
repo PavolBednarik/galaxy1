@@ -2,9 +2,6 @@
 
 require_once ("header.php");
 
-
-$all_movies_json = get_all_movies_json();
-
 ?>
 <br>
 <br>
@@ -44,7 +41,7 @@ $all_movies_json = get_all_movies_json();
     // Get the template for displaying each movie
     const movieTemplate = document.getElementById("movie-template");
     // Initialize an empty array to store movie data
-    let moviesData = <?php echo $all_movies_json; ?>;
+    let moviesData = <?php echo get_all_movies(); ?>;
     renderMovies(moviesData);
    
     // Function to render movies based on the provided data
