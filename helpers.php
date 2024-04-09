@@ -1,5 +1,6 @@
 <?php
-
+$is_admin= false;
+$is_user_logged= false;
 function execute_query($sql)
 {
     global $conn;
@@ -9,6 +10,41 @@ function execute_query($sql)
         $data[] = $row;
     }
     return $data;
+}
+
+function get_id_movies()
+{
+    $sql = "SELECT 
+    m.movie_id,
+    m.title,
+    m.synopsis,
+    m.release_date,
+    m.runtime,
+    m.poster,
+    m.picture1,
+    m.picture2,
+    m.picture3,
+    m.youtube_id,
+    GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres,
+    GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors
+FROM 
+    movies m
+LEFT JOIN 
+    movie_genre mg ON m.movie_id = mg.movies_id
+LEFT JOIN 
+    genres g ON mg.genre_id = g.genre_id
+LEFT JOIN 
+    actor_movie am ON m.movie_id = am.movie_id
+LEFT JOIN 
+    actors a ON am.actor_id = a.actor_id
+WHERE
+    m.movie_id IN (17, 18, 19, 20)
+GROUP BY 
+    m.movie_id
+ORDER BY 
+    m.movie_id;";
+
+    return json_encode(execute_query($sql));
 }
 
 function get_all_movies()
@@ -156,7 +192,13 @@ function insert_user()
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
         return;
     }
-
+    $name = $_POST["fname"] ?? null;
+    $surname = $_POST["fsurname"] ?? null;
+    $username = $_POST["fusername"] ?? null;
+    $email = $_POST["femail"] ?? null;
+    $phone = $_POST["fphone"] ?? null;
+    $password = $_POST["fpass"] ?? null;
+    $is_admin = 0;
     $username = !empty($_POST["fname"]) ? $_POST["fname"] : null;
 
     if ($username == null) {
@@ -195,7 +237,7 @@ function insert_user()
     $is_admin = 0; // New users are not administrators by default
 
     // Prepare and execute SQL statement to insert data into users table
-    $sql = "INSERT INTO users (username, password, email, is_admin) VALUES ('$username', '$password', '$email', $is_admin)";
+    $sql = "INSERT INTO users (name, surname, username, phone, password, email, is_admin) VALUES ('$name', '$surname', '$username', '$phone', '$password', '$email', $is_admin)";
 
     global $conn;
 
@@ -214,3 +256,33 @@ function insert_user()
     header("Location: " . $_SERVER["HTTP_REFERER"]);
     return;
 }
+function is_loged($username, $password ){
+   global $is_admin,$is_user_logged,$conn;
+$is_admin= false;
+$is_user_logged= false;
+if (isset($username)){
+    //die("user find"); 
+    $query="SELECT * from users WHERE username= '".$username."' AND password= '".$password."'";
+    $result = $conn->query($query);
+
+    if ($result->num_rows > 0) {
+        // Output data of each row
+        while($row = $result->fetch_assoc()) {
+            //echo $row['username'] . '<br>'; // Assuming 'username' is a column in your users table
+            if(intval( $row['is_admin'])==1) $is_admin= true;
+
+            $is_user_logged=true;
+        }
+    } else {
+        die("wrong password");
+    }
+}
+}
+// function is_logged(){
+//     if ($password == null) {
+//         $_SESSION['error'] = "Password cannot be empty!";
+//         // Redirect back to location from which the request was made
+//         header("Location: " . $_SERVER["HTTP_REFERER"]);
+//         return;
+//     } 
+// }

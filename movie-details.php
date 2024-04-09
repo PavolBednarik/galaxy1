@@ -1,7 +1,7 @@
 <?php
 
 require_once("header.php");
-
+require_once("helpers.php");
 $movie_id = !empty($_GET['movie-id']) ? $_GET['movie-id'] : 1;
 
 ?>

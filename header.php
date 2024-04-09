@@ -7,7 +7,10 @@ require_once("helpers.php");
 if (!session_id()) {
     session_start();
 }
-
+if($_GET['username']){
+is_loged($_GET['username'], $_GET['pass'] );
+//die($is_admin);
+}
 ?>
 
 <!doctype html>
@@ -23,6 +26,13 @@ if (!session_id()) {
 
 
     <style>
+        .carousel-item img {
+
+            max-height: 900px;
+            width: 100%;
+            object-fit: cover;
+        }
+
         /* styling for poster */
         .object-fit-cover {
             width: 100%;
@@ -105,7 +115,7 @@ if (!session_id()) {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="navbar-brand" href="GalaxyCinema.html">Home</a>
+                        <a class="navbar-brand" href="index.php">Home</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -121,7 +131,9 @@ if (!session_id()) {
                             Movies
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
+                        <?php if (!$is_admin){ ?>
                             <a class="dropdown-item" href="all-movies.php">Available movies</a>
+                            <?php } ?>
                             <a class="dropdown-item" href="upcoming-movies.php">Comming soon</a>
                         </div>
                     </li>
@@ -134,14 +146,45 @@ if (!session_id()) {
 
                     <button class="btn btn-outline btn-secondary my-2 my-sm-0" id="search-btn" type="submit">Search</button>
                 </form>
+                <?php
+                if (!$is_user_logged){ ?>
                 <div class="d-flex justify-content-end">
-                    <a href="Login.html" class="btn btn-primary ">Login</a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Login</button>
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#signInModal">
                         Sign In
                     </button>
                 </div>
+                <?php } ?>
             </div>
         </nav>
+        
+        <div class="container">
+            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="loginModalLabel">Login to Galaxy Cinema</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="header.php">
+                                <div class="mb-3">
+                                    <label for="loginUsername" class="form-label formdesign">Username</label>
+                                    <input name="username" type="text" class="form-control" id="loginUsername" aria-describedby="usernameHelp" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loginPassword" class="form-label formdesign">Password</label>
+                                    <input name="pass" type="password" class="form-control" id="loginPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary but">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog">
@@ -153,73 +196,78 @@ if (!session_id()) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <!-- <form id="sign-in-form" name="myForm" action="insert-user.php" method="post" onsubmit="return validateForm()"> -->
-                            <form id="sign-in-form" name="myForm" action="insert-user.php" method="post">
-                                <div class="form-group">
-                                    <label for="inputName" class="formdesign">Name:</label>
-                                    <input type="text" class="form-control" id="inputName" name="fname" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
+                            <form id="sign-in-form" name="myForm" action="insert-user.php" method="post" onsubmit="return validateForm()">
+                                <form id="sign-in-form" name="myForm" action="insert-user.php" method="post">
+                                    <div class="form-group">
+                                        <label for="inputName" class="formdesign">Name:</label>
+                                        <input type="text" class="form-control" id="inputName" name="fname" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="inputSurname" class="formdesign">Surname:</label>
-                                    <input type="text" class="form-control" id="inputSurname" name="fsurname" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="inputSurname" class="formdesign">Surname:</label>
+                                        <input type="text" class="form-control" id="inputSurname" name="fsurname" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="inputUsername" class="formdesign">Username:</label>
-                                    <input type="text" class="form-control" id="inputUsername" name="fusername" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="inputUsername" class="formdesign">Username:</label>
+                                        <input type="text" class="form-control" id="inputUsername" name="fusername" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="inputEmail" class="formdesign">Email:</label>
-                                    <input type="email" class="form-control" id="inputEmail" name="femail" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail" class="formdesign">Email:</label>
+                                        <input type="email" class="form-control" id="inputEmail" name="femail" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="inputPhone" class="formdesign">Mobile phone number:</label>
-                                    <input type="tel" class="form-control" id="inputPhone" name="fphone" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="inputPhone" class="formdesign">Mobile phone number:</label>
+                                        <input type="tel" class="form-control" id="inputPhone" name="fphone" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="inputPassword" class="formdesign">Password:</label>
-                                    <input type="password" class="form-control" id="inputPassword" name="fpass" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="inputPassword" class="formdesign">Password:</label>
+                                        <input type="password" class="form-control" id="inputPassword" name="fpass" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="confirmPassword" class="formdesign">Confirm Password:</label>
-                                    <input type="password" class="form-control" id="confirmPassword" name="fcpass" required="">
-                                    <b><span class="formerror"></span></b>
-                                </div>
-                                <div class="captcha-container">
-                                    <label for="captcha">Verify you're human:</label>
-                                    <input type="text" id="captcha" name="captcha" class="captcha-input">
-                                    <span id="captchaText"></span>
-                                </div>
-                                <button type="submit" class="btn btn-primary but">Submit</button>
+                                    <div class="form-group">
+                                        <label for="confirmPassword" class="formdesign">Confirm Password:</label>
+                                        <input type="password" class="form-control" id="confirmPassword" name="fcpass" required="">
+                                        <b><span class="formerror"></span></b>
+                                    </div>
+                                    <div class="captcha-container">
+                                        <label for="captcha">Verify you're human:</label>
+                                        <input type="text" id="captcha" name="captcha" class="captcha-input">
+                                        <span id="captchaText"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary but">Submit</button>
 
-                                <?php
+                                    <?php
 
-                                // Display session errors if any
-                                if (isset($_SESSION['error'])) {
-                                    echo "<div class='alert alert-danger mt-3' role='alert'>" . $_SESSION['error'] . "</div>";
-                                }
+                                    // // Display session errors if any
+                                    // if (isset($_SESSION['error'])) {
+                                    //     echo "<div class='alert alert-danger mt-3' role='alert'>" . $_SESSION['error'] . "</div>";
+                                    // }
 
-                                // Display success message if any
-                                if (isset($_SESSION['success'])) {
-                                    echo "<div class='alert alert-success mt-3' role='alert'>" . $_SESSION['success'] . "</div>";
-                                }
-                                ?>
-                            </form>
+                                    // // Display success message if any
+                                    // if (isset($_SESSION['success'])) {
+                                    //     echo "<div class='alert alert-success mt-3' role='alert'>" . $_SESSION['success'] . "</div>";
+                                    // }
+                                    ?>
+                                </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
     </div>
-    <div class="container">
+    <?php
+    if(isset($_GET['username'])){ 
+        require_once("footer.php");
+    }
+?>

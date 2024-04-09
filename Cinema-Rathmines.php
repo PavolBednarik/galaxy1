@@ -1,7 +1,7 @@
 <?php
 
 require_once ("header.php");
-
+require_once("helpers.php");
 ?>
 <br>
 <br>
@@ -27,7 +27,7 @@ require_once ("header.php");
         <br>
 
         <a href="#" class="btn btn-primary" id="movie-link">View More</a>
-        <a href="booking.html" class="btn btn-primary">Book now</a>
+        <a href="booking.php" class="btn btn-primary">Book now</a>
       </div>
     </div>
   </div>
