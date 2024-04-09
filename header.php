@@ -108,7 +108,7 @@ require_once("helpers.php");
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
                             <a class="dropdown-item" href="cinema-coolock.php">Galaxy Coolock</a>
-                            <a class="dropdown-item" href="Cinema-Rathmines.php">Galaxy Rathmines</a>
+                            <a class="dropdown-item" href="cinema-rathmines.php">Galaxy Rathmines</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">

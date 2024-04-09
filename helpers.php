@@ -40,7 +40,6 @@ function get_all_movies()
     return json_encode(execute_query($sql));
 }
 
-
 function get_upcoming_movies()
 {
     $sql = "SELECT 
@@ -68,6 +67,20 @@ function get_upcoming_movies()
 
 function get_coolock_movies()
 {
+    return get_cinema_movies('Galaxy Coolock');
+}
+
+function get_rathmines_movies()
+{
+    return get_cinema_movies('Galaxy Rathmines');
+}
+
+function get_cinema_movies($cinema)
+{
+    if (!$cinema) {
+        return null;
+    }
+
     $sql = "SELECT 
         m.movie_id,
         m.title,
@@ -88,7 +101,7 @@ function get_coolock_movies()
         LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
         LEFT JOIN actors a ON am.actor_id = a.actor_id
         JOIN cinema_movies cm ON m.movie_id = cm.movies_id  
-        JOIN cinema c ON cm.cinema_id = c.cinema_id AND c.name = 'Galaxy Coolock'  
+        JOIN cinema c ON cm.cinema_id = c.cinema_id AND c.name = '$cinema'
         GROUP BY 
         m.movie_id
         ORDER BY 
@@ -133,6 +146,6 @@ function get_movie($movie_id = null)
         m.movie_id;";
 
     $movie = execute_query($sql);
-    
+
     return count($movie) > 0 ? json_encode($movie[0]) : null;
 }

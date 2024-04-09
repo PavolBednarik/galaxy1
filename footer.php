@@ -41,8 +41,19 @@
         return movie.title.toLowerCase().includes(searchQuery);
       });
 
-      // Render filtered movies
-      renderMovies(filteredMovies);
+      // Check if renderMovies function is available
+      if (typeof renderMovies === 'function') {
+        renderMovies(filteredMovies);
+
+        return;
+      }
+
+      // Redirect to the movie detail
+      if (filteredMovies.length > 0) {
+        window.location.href = `movie-details.php?movie-id=${filteredMovies[0].movie_id}`;
+      }
+
+      return;
     });
 
     // Event listener for search field input

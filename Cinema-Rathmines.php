@@ -2,38 +2,6 @@
 
 require_once ("header.php");
 
-$sql = "SELECT 
-m.movie_id,
-m.title,
-m.synopsis,
-m.release_date,
-m.runtime,
-m.poster,
-m.picture1,
-m.picture2,
-m.picture3,
-m.youtube_id,
-GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres,
-GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors
-FROM 
-movies m
-LEFT JOIN movie_genre mg ON m.movie_id = mg.movies_id
-LEFT JOIN genres g ON mg.genre_id = g.genre_id
-LEFT JOIN actor_movie am ON m.movie_id = am.movie_id
-LEFT JOIN actors a ON am.actor_id = a.actor_id
-JOIN cinema_movies cm ON m.movie_id = cm.movies_id  
-JOIN cinema c ON cm.cinema_id = c.cinema_id AND c.name = 'Galaxy Rathmines'  
-GROUP BY 
-m.movie_id
-ORDER BY 
-m.movie_id;";
-$result = $conn->query($sql);
-$all_movies = array(); // Initialize an empty array to store all movies
-while($row = $result->fetch_assoc()) {
-    $all_movies[] = $row; // Append each movie row to the array
-}
-$all_movies_json = json_encode($all_movies);
-
 ?>
 <br>
 <br>
@@ -70,7 +38,7 @@ $all_movies_json = json_encode($all_movies);
     // Get the template for displaying each movie
     const movieTemplate = document.getElementById("movie-template");
     // Initialize an empty array to store movie data
-    let moviesData = <?php echo $all_movies_json; ?>;
+    let moviesData = <?php echo get_rathmines_movies(); ?>;
     renderMovies(moviesData);
    
     // Function to render movies based on the provided data
@@ -84,19 +52,16 @@ $all_movies_json = json_encode($all_movies);
         // Populate the cloned template with movie data
         movieClone.querySelector('#movie-title').textContent = movie.title;
         movieClone.querySelector('#movie-genre').textContent = movie.genres;
-movieClone.querySelector('#movie-actor').textContent = movie.actors;
-         movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
-         movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
-         movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id
-           }`);
+        movieClone.querySelector('#movie-actor').textContent = movie.actors;
+        movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
+        movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
+        movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id}`);
         movieClone.style.display = "flex";
         // Append the populated template to the container
         container.appendChild(movieClone);
       });
     }
-
     </script>
-
 <?php
 
 require_once ("footer.php");
