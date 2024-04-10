@@ -8,6 +8,11 @@ if (!session_id()) {
     session_start();
 }
 
+// Redirect not logged in user to login.php if not currently at login.php
+if (!is_user_logged_in() && !is_login_page()) {
+    header("Location: login.php");
+}
+
 ?>
 
 <!doctype html>
@@ -104,45 +109,51 @@ if (!session_id()) {
 <body>
     <div class="container">
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-            <a class="navbar-brand" href="<?php echo get_home_url(); ?>index.php">Galaxy Cinema</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <?php if(is_user_logged_in()) { ?>
+                <a class="navbar-brand" href="<?php echo get_home_url(); ?>index.php">Galaxy Cinema</a>
+                
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            <?php } ?>
+            
+            <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarSupportedContent">
+                <?php if(is_user_logged_in()) { ?>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="navbar-brand" href="<?php echo get_home_url(); ?>index.php">Home</a>
-                    </li>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="navbar-brand" href="<?php echo get_home_url(); ?>index.php">Home</a>
+                        </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cinemas</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cinemas</a>
 
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
-                            <a class="dropdown-item" href="cinema-coolock.php">Galaxy Coolock</a>
-                            <a class="dropdown-item" href="cinema-rathmines.php">Galaxy Rathmines</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movies</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
+                                <a class="dropdown-item" href="cinema-coolock.php">Galaxy Coolock</a>
+                                <a class="dropdown-item" href="cinema-rathmines.php">Galaxy Rathmines</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movies</a>
 
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
-                            <?php if (!is_admin()) { ?>
-                                <a class="dropdown-item" href="all-movies.php">Available movies</a>
-                            <?php } ?>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
+                                <?php if (!is_admin()) { ?>
+                                    <a class="dropdown-item" href="all-movies.php">Available movies</a>
+                                <?php } ?>
 
-                            <a class="dropdown-item" href="upcoming-movies.php">Comming soon</a>
-                        </div>
-                    </li>
-                    <!-- login, sign in  and search button-->
+                                <a class="dropdown-item" href="upcoming-movies.php">Comming soon</a>
+                            </div>
+                        </li>
+                    </ul>
 
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search-field">
-                    <div id="autocomplete-dropdown" class="autocomplete-items" style="display: none;"></div>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search-field">
+                        <div id="autocomplete-dropdown" class="autocomplete-items" style="display: none;"></div>
 
-                    <button class="btn btn-outline btn-secondary my-2 my-sm-0" id="search-btn" type="submit">Search</button>
-                </form>
+                        <button class="btn btn-outline btn-secondary my-2 my-sm-0" id="search-btn" type="submit">Search</button>
+                    </form>
+                <?php } ?>
+ 
                 <?php
                 if (!is_user_logged_in()) { ?>
                     <div class="d-flex justify-content-end">
@@ -150,7 +161,7 @@ if (!session_id()) {
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#signInModal">Sign In</button>
                     </div>
                 <?php } else { ?>
-                    <a href="/logout.php" class="btn btn-danger">Log Out</a>
+                    <a href="/logout-action.php" class="btn btn-danger">Log Out</a>
                 <?php } ?>
             </div>
         </nav>
@@ -166,7 +177,7 @@ if (!session_id()) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="login.php" method="post">
+                            <form action="login-action.php" method="post">
                                 <div class="mb-3">
                                     <label for="loginUsername" class="form-label formdesign">Username</label>
                                     <input name="username" type="text" class="form-control" id="loginUsername" aria-describedby="usernameHelp" required>
@@ -207,7 +218,7 @@ if (!session_id()) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="sign-in-form" name="myForm" action="register.php" method="post" onsubmit="return validateForm()">
+                            <form id="sign-in-form" name="myForm" action="register-action.php" method="post" onsubmit="return validateForm()">
                                 <div class="form-group">
                                     <label for="inputName" class="formdesign">Name:</label>
                                     <input type="text" class="form-control" id="inputName" name="fname" required="">

@@ -1,16 +1,20 @@
 <?php
 
-// Allow only POST requests
-if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    return;
-}
+require_once("header.php");
 
- // Start session if not already started to store error messages
-if (!session_id()) {
-    session_start();
-}
+?>
+<br>
+<br>
+<br>
 
-require_once('connection.php');
-require_once('helpers.php');
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="col-12 text-center">
+        <h1 class="text-white">You have to log in to continue</h1>
+    </div>
+</div>
 
-login_user();
+<?php
+
+require_once("footer.php");
+
+?>

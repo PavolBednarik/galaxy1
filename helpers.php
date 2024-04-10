@@ -391,3 +391,9 @@ function get_home_url()
 
     return $base_url;
 }
+
+// Check if user is at login page
+function is_login_page()
+{
+    return strpos($_SERVER['REQUEST_URI'], 'login.php') !== false;
+}

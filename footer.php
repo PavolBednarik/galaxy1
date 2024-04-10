@@ -32,59 +32,64 @@
     const searchMoviesData = <?php echo get_all_movies(); ?>;
 
     // Event listener for the search button
-    document.querySelector('#search-btn').addEventListener('click', function (event) {
-      event.preventDefault(); // Prevent form submission
-      // Get the search query from the input field
-      const searchQuery = document.querySelector('input[type="search"]').value.toLowerCase();
-      // Filter movies based on the search query
-      const filteredMovies = searchMoviesData.filter(movie => {
-        return movie.title.toLowerCase().includes(searchQuery);
-      });
+    var searchButton = document.querySelector('#search-btn');
 
-      // Check if renderMovies function is available
-      if (typeof renderMovies === 'function') {
-        renderMovies(filteredMovies);
+    if(searchButton) {
+      document.querySelector('#search-btn').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent form submission
+        // Get the search query from the input field
+        const searchQuery = document.querySelector('input[type="search"]').value.toLowerCase();
+        // Filter movies based on the search query
+        const filteredMovies = searchMoviesData.filter(movie => {
+          return movie.title.toLowerCase().includes(searchQuery);
+        });
+
+        // Check if renderMovies function is available
+        if (typeof renderMovies === 'function') {
+          renderMovies(filteredMovies);
+
+          return;
+        }
+
+        // Redirect to the movie detail
+        if (filteredMovies.length > 0) {
+          window.location.href = `movie-details.php?movie-id=${filteredMovies[0].movie_id}`;
+        }
 
         return;
-      }
-
-      // Redirect to the movie detail
-      if (filteredMovies.length > 0) {
-        window.location.href = `movie-details.php?movie-id=${filteredMovies[0].movie_id}`;
-      }
-
-      return;
-    });
-
-    // Event listener for search field input
-    document.querySelector('#search-field').addEventListener('input', function (event) {
-      // Get the search query from the input field
-      const searchQuery = event.target.value.toLowerCase();
-      const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
-
-      // Filter movies based on search query
-      const matchedMovies = searchMoviesData.filter(movie => movie.title.toLowerCase().includes(searchQuery));
-
-      // Populate autocomplete dropdown with matched movie titles
-      autocompleteDropdown.innerHTML = '';
-      matchedMovies.forEach(movie => {
-        const autocompleteItem = document.createElement('div');
-        autocompleteItem.classList.add('autocomplete-item');
-        autocompleteItem.textContent = movie.title;
-        autocompleteItem.addEventListener('click', function () {
-          document.querySelector('#search-field').value = movie.title;
-          autocompleteDropdown.style.display = 'none';
-        });
-        autocompleteDropdown.appendChild(autocompleteItem);
       });
 
-      // Show/hide autocomplete dropdown based on search query length
-      if (searchQuery.length > 0) {
-        autocompleteDropdown.style.display = 'block';
-      } else {
-        autocompleteDropdown.style.display = 'none';
-      }
-    });
+      // Event listener for search field input
+      document.querySelector('#search-field').addEventListener('input', function (event) {
+        // Get the search query from the input field
+        const searchQuery = event.target.value.toLowerCase();
+        const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
+
+        // Filter movies based on search query
+        const matchedMovies = searchMoviesData.filter(movie => movie.title.toLowerCase().includes(searchQuery));
+
+        // Populate autocomplete dropdown with matched movie titles
+        autocompleteDropdown.innerHTML = '';
+        matchedMovies.forEach(movie => {
+          const autocompleteItem = document.createElement('div');
+          autocompleteItem.classList.add('autocomplete-item');
+          autocompleteItem.textContent = movie.title;
+          autocompleteItem.addEventListener('click', function () {
+            document.querySelector('#search-field').value = movie.title;
+            autocompleteDropdown.style.display = 'none';
+          });
+          autocompleteDropdown.appendChild(autocompleteItem);
+        });
+
+        // Show/hide autocomplete dropdown based on search query length
+        if (searchQuery.length > 0) {
+          autocompleteDropdown.style.display = 'block';
+        } else {
+          autocompleteDropdown.style.display = 'none';
+        }
+      });
+
+    }
 
     // Generate a random CAPTCHA code
         function generateCaptcha() {
