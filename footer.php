@@ -162,6 +162,11 @@
         // If session contains error or success message, open sign in modal
         if ('<?php echo isset($_SESSION['login_error']) || isset($_SESSION['login_success']); ?>') {
             $('#loginModal').modal('show');
+          }
+        
+        // Show the login modal if user is not logged in
+        if('<?php echo !is_user_logged_in(); ?>') {
+          $('#loginModal').modal('show');
         }
   </script>
 </body>
