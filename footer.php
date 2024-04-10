@@ -1,10 +1,3 @@
-<?php
-
-// Unset session variables
-unset($_SESSION['error']);
-unset($_SESSION['success']);
-
-?>
 <div class="row">
       <div class="col"></div>
       <div class="col"></div>
@@ -162,10 +155,20 @@ unset($_SESSION['success']);
         }
         
         // If session contains error or success message, open sign in modal
-        if ('<?php echo isset($_SESSION['error']) || isset($_SESSION['success']); ?>') {
+        if ('<?php echo isset($_SESSION['register_error']) || isset($_SESSION['register_success']); ?>') {
             $('#signInModal').modal('show');
+        }
+
+        // If session contains error or success message, open sign in modal
+        if ('<?php echo isset($_SESSION['login_error']) || isset($_SESSION['login_success']); ?>') {
+            $('#loginModal').modal('show');
         }
   </script>
 </body>
-
 </html>
+<?php
+
+// Unset session variables
+unset($_SESSION['login_error']);
+unset($_SESSION['register_error']);
+unset($_SESSION['register_success']);

@@ -1,6 +1,6 @@
 <?php
-$is_admin= false;
-$is_user_logged= false;
+
+// Execute SQL query and return data as array
 function execute_query($sql)
 {
     global $conn;
@@ -12,8 +12,10 @@ function execute_query($sql)
     return $data;
 }
 
-function get_id_movies()
+function get_featured_movies()
 {
+    $featured_movies_ids = [17, 18, 19, 20]; // Featured movies IDs
+
     $sql = "SELECT 
     m.movie_id,
     m.title,
@@ -27,26 +29,27 @@ function get_id_movies()
     m.youtube_id,
     GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres,
     GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS actors
-FROM 
-    movies m
-LEFT JOIN 
-    movie_genre mg ON m.movie_id = mg.movies_id
-LEFT JOIN 
-    genres g ON mg.genre_id = g.genre_id
-LEFT JOIN 
-    actor_movie am ON m.movie_id = am.movie_id
-LEFT JOIN 
-    actors a ON am.actor_id = a.actor_id
-WHERE
-    m.movie_id IN (17, 18, 19, 20)
-GROUP BY 
-    m.movie_id
-ORDER BY 
-    m.movie_id;";
+    FROM 
+        movies m
+    LEFT JOIN 
+        movie_genre mg ON m.movie_id = mg.movies_id
+    LEFT JOIN 
+        genres g ON mg.genre_id = g.genre_id
+    LEFT JOIN 
+        actor_movie am ON m.movie_id = am.movie_id
+    LEFT JOIN 
+        actors a ON am.actor_id = a.actor_id
+    WHERE
+        m.movie_id IN (" . implode(',', $featured_movies_ids) . ")
+    GROUP BY 
+        m.movie_id
+    ORDER BY 
+        m.movie_id;";
 
     return json_encode(execute_query($sql));
 }
 
+// Get all movies
 function get_all_movies()
 {
     $sql = "SELECT 
@@ -76,6 +79,7 @@ function get_all_movies()
     return json_encode(execute_query($sql));
 }
 
+// Get upcoming movies
 function get_upcoming_movies()
 {
     $sql = "SELECT 
@@ -101,16 +105,19 @@ function get_upcoming_movies()
     return json_encode(execute_query($sql));
 }
 
+// Get movies by coolock cinema
 function get_coolock_movies()
 {
     return get_cinema_movies('Galaxy Coolock');
 }
 
+// Get movies by rathmines cinema
 function get_rathmines_movies()
 {
     return get_cinema_movies('Galaxy Rathmines');
 }
 
+// Get movies by cinema
 function get_cinema_movies($cinema)
 {
     if (!$cinema) {
@@ -146,6 +153,7 @@ function get_cinema_movies($cinema)
     return json_encode(execute_query($sql));
 }
 
+// Get single movie by ID
 function get_movie($movie_id = null)
 {
     if ($movie_id == null) {
@@ -186,12 +194,14 @@ function get_movie($movie_id = null)
     return count($movie) > 0 ? json_encode($movie[0]) : null;
 }
 
+// Insert new user into database
 function insert_user()
 {
     // Check if form is submitted and call the insertUser function
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
         return;
     }
+
     $name = $_POST["fname"] ?? null;
     $surname = $_POST["fsurname"] ?? null;
     $username = $_POST["fusername"] ?? null;
@@ -202,7 +212,7 @@ function insert_user()
     $username = !empty($_POST["fname"]) ? $_POST["fname"] : null;
 
     if ($username == null) {
-        $_SESSION['error'] = "Name cannot be empty!";
+        $_SESSION['register_error'] = "Name cannot be empty!";
 
         // Redirect back to location from which the request was made
         header("Location: " . $_SERVER["HTTP_REFERER"]);
@@ -212,14 +222,14 @@ function insert_user()
     $email = !empty($_POST["femail"]) ? $_POST["femail"] : null;
 
     if ($email == null) {
-        $_SESSION['error'] = "Email cannot be empty!";
+        $_SESSION['register_error'] = "Email cannot be empty!";
         // Redirect back to location from which the request was made
         header("Location: " . $_SERVER["HTTP_REFERER"]);
         return;
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['error'] = "Invalid email address";
+        $_SESSION['register_error'] = "Invalid email address";
         // Redirect back to location from which the request was made
         header("Location: " . $_SERVER["HTTP_REFERER"]);
         return;
@@ -228,7 +238,7 @@ function insert_user()
     $password = !empty($_POST["fpass"]) ? $_POST["fpass"] : null;
 
     if ($password == null) {
-        $_SESSION['error'] = "Password cannot be empty!";
+        $_SESSION['register_error'] = "Password cannot be empty!";
         // Redirect back to location from which the request was made
         header("Location: " . $_SERVER["HTTP_REFERER"]);
         return;
@@ -244,45 +254,113 @@ function insert_user()
     try {
         $conn->query($sql);
     } catch (Exception $e) {
-        $_SESSION['error'] = "Error: " . $sql . "<br>" . $conn->error;
-        
+        $_SESSION['register_error'] = "Error: " . $sql . "<br>" . $conn->error;
+
         header("Location: " . $_SERVER["HTTP_REFERER"]);
         return;
     }
 
     // Set success message
-    $_SESSION['success'] = "User successfully registered.";
+    $_SESSION['register_success'] = "User successfully registered.";
 
     header("Location: " . $_SERVER["HTTP_REFERER"]);
     return;
 }
-function is_loged($username, $password ){
-   global $is_admin,$is_user_logged,$conn;
-$is_admin= false;
-$is_user_logged= false;
-if (isset($username)){
-    //die("user find"); 
-    $query="SELECT * from users WHERE username= '".$username."' AND password= '".$password."'";
-    $result = $conn->query($query);
+
+// Login user
+function login_user()
+{
+    // Check if form is submitted and call the insertUser function
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        return;
+    }
+
+    // Get username and password from POST request
+    $username = $_POST["username"] ?? null;
+    $password = $_POST["pass"] ?? null;
+
+    if ($username == null || $password == null) {
+        $_SESSION['login_error'] = "Username and password are required!";
+
+        header("Location: " . $_SERVER["HTTP_REFERER"]);
+        return;
+    }
+
+    // Prepare and execute SQL statement to get user with provided username and password
+    $sql = "SELECT user_id FROM users WHERE username = '$username' AND password = '$password'";
+    global $conn;
+    $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        // Output data of each row
-        while($row = $result->fetch_assoc()) {
-            //echo $row['username'] . '<br>'; // Assuming 'username' is a column in your users table
-            if(intval( $row['is_admin'])==1) $is_admin= true;
+        $row = $result->fetch_assoc();
+        $user_id = (int) $row['user_id'];
 
-            $is_user_logged=true;
-        }
+        // Set logged in user ID in cookie
+        setcookie('logged_in_user_id', $user_id, time() + (86400 * 30), "/");
+
+        // Redirect to home page
+        header("Location: /");
+        return;
+
     } else {
-        die("wrong password");
+        $_SESSION['login_error'] = "Invalid username or password!";
+
+        header("Location: " . $_SERVER["HTTP_REFERER"]);
+        return;
     }
 }
+
+// Get current logged in user ID
+function get_current_logged_in_user_id()
+{
+    return !empty($_COOKIE['logged_in_user_id']) ? (int) $_COOKIE['logged_in_user_id'] : 0;
 }
-// function is_logged(){
-//     if ($password == null) {
-//         $_SESSION['error'] = "Password cannot be empty!";
-//         // Redirect back to location from which the request was made
-//         header("Location: " . $_SERVER["HTTP_REFERER"]);
-//         return;
-//     } 
-// }
+
+// Check if user is logged in
+function is_user_logged_in()
+{
+    $logged_in_user_id = get_current_logged_in_user_id();
+
+    if ($logged_in_user_id <= 0) {
+        return false;
+    }
+
+    return true;
+}
+
+// Check if current user is an admin
+function is_admin()
+{
+    $logged_in_user_id = get_current_logged_in_user_id();
+
+    if ($logged_in_user_id <= 0) {
+        return false;
+    }
+
+    global $conn;
+
+    $sql = "SELECT is_admin FROM users WHERE user_id = $logged_in_user_id";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        return (int) $row['is_admin'] == 1;
+    }
+
+    return false;
+}
+
+// Logout user
+function logout_user()
+{
+    // Unset logged in user ID cookie
+    setcookie('logged_in_user_id', '', time() - 3600, "/");
+    unset($_COOKIE['logged_in_user_id']);
+
+    // Redirect to home page
+    header("Location: /");
+
+    return;
+}

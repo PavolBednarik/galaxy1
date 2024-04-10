@@ -90,7 +90,7 @@ require_once("helpers.php");
     // Get the template for displaying each movie
     const movieTemplate = document.getElementById("movie-template");
     // Initialize an empty array to store movie data
-    let moviesData = <?php echo get_id_movies(); ?>;
+    let moviesData = <?php echo get_featured_movies(); ?>;
     renderMovies(moviesData);
 
     // Function to render movies based on the provided data
