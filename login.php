@@ -9,7 +9,7 @@ require_once("header.php");
 
 <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
     <div class="col-12 text-center">
-        <h1 class="text-white">You have to log in to continue</h1>
+        <h1 class="text-white">You need to be log inn to visit Galaxy Cinema </h1>
     </div>
 </div>
 

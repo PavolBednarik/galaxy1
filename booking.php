@@ -2,6 +2,17 @@
 
 require_once("header.php");
 
+
+
+$cinemaName = $_GET['name'] ?? '';
+
+if ($cinemaName == 'Galaxy Coolock') {
+    echo get_coolock_movies();
+} elseif ($cinemaName == 'Galaxy Rathmines') {
+    echo get_rathmines_movies();
+} else {
+    echo json_encode([]);
+}
 ?>
 <br>
 <br>
@@ -26,15 +37,18 @@ require_once("header.php");
                         </div>
                         <div class="form-group">
                             <label for="cinema">Cinema</label>
-                            <select class="form-control" id="cinema" onchange="populateMovies()">
+                            <select class="form-control" id="cinema" name="cinema" onchange="populateMovies()">
                                 <option value="">Select Cinema</option>
-                                <!-- Cinema populating using ID -->
+                                <option value="Galaxy Coolock">Galaxy Coolock</option>
+                                <option value="Galaxy Rathmines">Galaxy Rathmines</option>
                             </select>
+
                         </div>
                         <div class="form-group">
                             <label for="movie">Movie</label>
-                            <select class="form-control" id="movie">
-                                <!-- Movie population depend of cinema -->
+                            <select class="form-control" id="movie" name="movie">
+                                <option value="">Select Movie</option>
+                                <!-- Movie options will be added here by populateMovies() -->
                             </select>
                         </div>
                         <div class="form-group">
@@ -59,30 +73,55 @@ require_once("header.php");
     </div>
 </div>
 <script>
+    document.getElementById("cinema").addEventListener("change", function() {
+        populateMovies();
+    });
+
+    function populateMovies() {
+        const cinemaName = document.getElementById('cinema').value;
+        if (!cinemaName) {
+            document.getElementById("movie").innerHTML = '<option>Select a cinema first</option>';
+            return;
+        }
+
+
+        fetch('fetch_movies_by_cinema.php?cinemaName=' + encodeURIComponent(cinemaName))
+            .then(response => response.json())
+            .then(data => {
+                const movieSelect = document.getElementById("movie");
+                movieSelect.innerHTML = '<option value="">Select Movie</option>'; // Clear existing options
+                data.forEach(movie => {
+                    const option = new Option(movie.title, movie.movie_id);
+                    movieSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error fetching movies:', error));
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         const todayFormatted = today.toISOString().split('T')[0];
         document.getElementById("date").setAttribute('min', todayFormatted);
-        
+
         // Function to update available times
         function updateAvailableTimes() {
             const timeSelect = document.getElementById("time");
             const selectedDate = new Date(document.getElementById("date").value);
             selectedDate.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
-            
+
             // Clear existing options
             timeSelect.innerHTML = '<option value="">Select Time</option>';
-            
+
             // Define your booking times
             const times = ["14:00", "16:00", "18:00", "20:00"];
             const currentTime = new Date();
-            
+
             times.forEach(function(time) {
                 const [hours, minutes] = time.split(':');
                 const optionDate = new Date(selectedDate.getTime());
                 optionDate.setHours(hours, minutes);
-                
+
                 // Add option if it's for a future date or time
                 if (selectedDate > today || (selectedDate.getTime() === today.getTime() && currentTime < optionDate)) {
                     const option = new Option(time, time);
@@ -90,13 +129,33 @@ require_once("header.php");
                 }
             });
         }
-        
+
         // Update times when the date changes
         document.getElementById("date").addEventListener('change', updateAvailableTimes);
-        
+
         // Set initial available times
         updateAvailableTimes();
     });
+
+    function populateMovies(cinemaName) {
+        if (!cinemaName) {
+            document.getElementById("movie").innerHTML = '<option>Select a cinema first</option>';
+            return;
+        }
+
+
+        fetch('fetch_movies_by_cinema.php?cinemaName=' + encodeURIComponent(cinemaName))
+            .then(response => response.json())
+            .then(data => {
+                const movieSelect = document.getElementById("movie");
+                movieSelect.innerHTML = '<option value="">Select Movie</option>'; // Clear existing options
+                data.forEach(movie => {
+                    const option = new Option(movie.title, movie.movie_id);
+                    movieSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error fetching movies:', error));
+    }
 </script>
 <br>
 <br>

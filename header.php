@@ -137,14 +137,23 @@ if (!is_user_logged_in() && !is_login_page()) {
                             <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movies</a>
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
-                                <?php if (!is_admin()) { ?>
                                     <a class="dropdown-item" href="<?php echo get_home_url(); ?>all-movies.php">Available movies</a>
-                                <?php } ?>
-
                                 <a class="dropdown-item" href="<?php echo get_home_url(); ?>upcoming-movies.php">Comming soon</a>
                             </div>
                         </li>
+                        </li>
+                    <?php if (is_admin()) { ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin menu</a>
+
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
+                            <a class="dropdown-item" href="add-new-movie.php">Add new movie</a>
+                            <a class="dropdown-item" href="booking-report.php">Booking report</a>
+                        </div>
+                    </li>
+                    <?php } ?>
                     </ul>
+                    
 
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search-field">

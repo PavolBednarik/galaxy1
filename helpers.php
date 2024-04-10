@@ -11,7 +11,14 @@ function execute_query($sql)
     }
     return $data;
 }
+function get_cinemas() {
 
+  
+    $sql = "SELECT cinema_id, name FROM cinema ORDER BY name ASC"; 
+
+
+    return json_encode(execute_query($sql));
+}
 // Get featured movies for homepage
 function get_featured_movies()
 {

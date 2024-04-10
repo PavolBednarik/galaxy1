@@ -8,7 +8,7 @@ $movie_id = !empty($_GET['movie-id']) ? $_GET['movie-id'] : 1;
 <br>
 <br>
 <br>
-
+<div class="container">
  <div class="row">
       <div class="col-md-5">
         <a href="#" id="movie-poster-link" data-lightbox="gallery">
