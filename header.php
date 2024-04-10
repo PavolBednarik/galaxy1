@@ -10,7 +10,7 @@ if (!session_id()) {
 
 // Redirect not logged in user to login.php if not currently at login.php
 if (!is_user_logged_in() && !is_login_page()) {
-    header("Location: login.php");
+    header("Location: " . get_home_url() . "login.php");
 }
 
 ?>
