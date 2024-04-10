@@ -129,8 +129,8 @@ if (!is_user_logged_in() && !is_login_page()) {
                             <a class="nav-link btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cinemas</a>
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
-                                <a class="dropdown-item" href="cinema-coolock.php">Galaxy Coolock</a>
-                                <a class="dropdown-item" href="cinema-rathmines.php">Galaxy Rathmines</a>
+                                <a class="dropdown-item" href="<?php echo get_home_url(); ?>cinema-coolock.php">Galaxy Coolock</a>
+                                <a class="dropdown-item" href="<?php echo get_home_url(); ?>cinema-rathmines.php">Galaxy Rathmines</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -138,10 +138,10 @@ if (!is_user_logged_in() && !is_login_page()) {
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="padding: 0.5rem 1rem;">
                                 <?php if (!is_admin()) { ?>
-                                    <a class="dropdown-item" href="all-movies.php">Available movies</a>
+                                    <a class="dropdown-item" href="<?php echo get_home_url(); ?>all-movies.php">Available movies</a>
                                 <?php } ?>
 
-                                <a class="dropdown-item" href="upcoming-movies.php">Comming soon</a>
+                                <a class="dropdown-item" href="<?php echo get_home_url(); ?>upcoming-movies.php">Comming soon</a>
                             </div>
                         </li>
                     </ul>
@@ -177,7 +177,7 @@ if (!is_user_logged_in() && !is_login_page()) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="login-action.php" method="post">
+                            <form action="<?php echo get_home_url(); ?>login-action.php" method="post">
                                 <div class="mb-3">
                                     <label for="loginUsername" class="form-label formdesign">Username</label>
                                     <input name="username" type="text" class="form-control" id="loginUsername" aria-describedby="usernameHelp" required>
@@ -218,7 +218,7 @@ if (!is_user_logged_in() && !is_login_page()) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="sign-in-form" name="myForm" action="register-action.php" method="post" onsubmit="return validateForm()">
+                            <form id="sign-in-form" name="myForm" action="<?php echo get_home_url(); ?>register-action.php" method="post" onsubmit="return validateForm()">
                                 <div class="form-group">
                                     <label for="inputName" class="formdesign">Name:</label>
                                     <input type="text" class="form-control" id="inputName" name="fname" required="">
