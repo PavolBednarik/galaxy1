@@ -300,7 +300,7 @@ function login_user()
         setcookie('logged_in_user_id', $user_id, time() + (86400 * 30), "/");
 
         // Redirect to home page
-        header("Location: /index.php");
+        header("Location: " . get_home_url() . "index.php");
         return;
 
     } else {
@@ -361,7 +361,28 @@ function logout_user()
     unset($_COOKIE['logged_in_user_id']);
 
     // Redirect to home page
-    header("Location: /index.php");
+    header("Location: " . get_home_url() . "index.php");
 
     return;
+}
+
+// Get home url
+function get_home_url()
+{
+    // Check if HTTPS is used, else fallback to HTTP
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+
+    // Get the server's host, e.g., localhost or domain.local
+    $host = $_SERVER['HTTP_HOST'];
+
+    // Get the script's directory path, excluding the script filename, to handle subdirectories
+    $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+
+    // Construct and normalize the base URL
+    $baseUrl = $protocol . '://' . $host . $scriptPath;
+
+    // Ensure the base URL ends with a slash for consistency
+    $baseUrl = rtrim($baseUrl, '/');
+
+    return $baseUrl;
 }
