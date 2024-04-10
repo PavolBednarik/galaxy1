@@ -376,13 +376,13 @@ function get_home_url()
     $host = $_SERVER['HTTP_HOST'];
 
     // Get the script's directory path, excluding the script filename, to handle subdirectories
-    $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+    $script_path = dirname($_SERVER['SCRIPT_NAME']);
 
     // Construct and normalize the base URL
-    $baseUrl = $protocol . '://' . $host . $scriptPath;
+    $base_url = $protocol . '://' . $host . $script_path;
 
     // Ensure the base URL ends with a slash for consistency
-    $baseUrl = rtrim($baseUrl, '/');
+    $base_url = rtrim($base_url, '/');
 
-    return $baseUrl;
+    return $base_url;
 }
