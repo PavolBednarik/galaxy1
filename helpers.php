@@ -367,7 +367,8 @@ function logout_user()
 }
 
 // Get home url
-function get_home_url() {
+function get_home_url()
+{
     // Check if HTTPS is used, else fallback to HTTP
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
 
@@ -390,5 +391,3 @@ function get_home_url() {
 
     return $base_url;
 }
-
-
