@@ -12,6 +12,7 @@ function execute_query($sql)
     return $data;
 }
 
+// Get featured movies for homepage
 function get_featured_movies()
 {
     $featured_movies_ids = [17, 18, 19, 20]; // Featured movies IDs
