@@ -26,7 +26,7 @@ require_once("header.php");
             <div class="carousel-caption d-none d-md-block">
                 <h5>Book your movie </h5>
                 <p>Chose cinema and enjoy your movie </p>
-                <a href="booking.php" class="btn btn-primary">Book now</a>
+                <a href="<?php echo get_home_url(); ?>booking.php" class="btn btn-primary">Book now</a>
 
             </div>
         </div>
@@ -35,7 +35,7 @@ require_once("header.php");
             <div class="carousel-caption d-none d-md-block">
                 <h5>COMMING SOON</h5>
                 <p>Movies arriving soon </p>
-                <a href="upcoming-movies.php" class="btn btn-primary">View</a>
+                <a href="<?php echo get_home_url(); ?>upcoming-movies.php" class="btn btn-primary">View</a>
 
             </div>
         </div>
@@ -76,7 +76,7 @@ require_once("header.php");
             <br>
 
             <a href="#" class="btn btn-primary" id="movie-link">View More</a>
-            <a href="booking.php" class="btn btn-primary booking-btn">Book now</a>
+            <a href="<?php echo get_home_url(); ?>booking.php" class="btn btn-primary booking-btn">Book now</a>
         </div>
     </div>
 </div>
@@ -106,7 +106,7 @@ require_once("header.php");
             movieClone.querySelector('#movie-actor').textContent = movie.actors;
             movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
             movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
-            movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id}`);
+            movieClone.querySelector('#movie-link').setAttribute('href', `<?php echo get_home_url(); ?>movie-details.php?movie-id=${movie.movie_id}`);
             movieClone.style.display = "flex";
             // Append the populated template to the container
             container.appendChild(movieClone);

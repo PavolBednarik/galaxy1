@@ -27,7 +27,7 @@ require_once("header.php");
       <br>
 
       <a href="#" class="btn btn-primary" id="movie-link">View More</a>
-      <a href="booking.php" class="btn btn-primary">Book now</a>
+      <a href="<?php echo get_home_url(); ?>booking.php" class="btn btn-primary">Book now</a>
     </div>
   </div>
 </div>
@@ -56,7 +56,7 @@ require_once("header.php");
       movieClone.querySelector('#movie-actor').textContent = movie.actors;
       movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
       movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
-      movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id
+      movieClone.querySelector('#movie-link').setAttribute('href', `<?php echo get_home_url(); ?>movie-details.php?movie-id=${movie.movie_id
            }`);
       movieClone.style.display = "flex";
       // Append the populated template to the container

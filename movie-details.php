@@ -35,7 +35,7 @@ $movie_id = !empty($_GET['movie-id']) ? $_GET['movie-id'] : 1;
           <span class="badge bg-secondary" id="movie-cinema"></span>
         </p>
         <div class="d-flex align-items-center">
-          <a href="booking.php" class="btn btn-primary" id="book-now-btn">Book now</a>
+          <a href="<?php echo get_home_url(); ?>booking.php" class="btn btn-primary" id="book-now-btn">Book now</a>
         </div>
       </div>
 

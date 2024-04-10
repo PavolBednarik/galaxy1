@@ -53,7 +53,7 @@
 
         // Redirect to the movie detail
         if (filteredMovies.length > 0) {
-          window.location.href = `movie-details.php?movie-id=${filteredMovies[0].movie_id}`;
+          window.location.href = `<?php echo get_home_url(); ?>movie-details.php?movie-id=${filteredMovies[0].movie_id}`;
         }
 
         return;

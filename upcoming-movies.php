@@ -68,7 +68,7 @@ require_once("header.php");
 
         movieClone.querySelector('#movie-poster').setAttribute('src', movie.poster);
         movieClone.querySelector('#movie-poster').setAttribute('alt', movie.title);
-        movieClone.querySelector('#movie-link').setAttribute('href', `movie-details.php?movie-id=${movie.movie_id}`);
+        movieClone.querySelector('#movie-link').setAttribute('href', `<?php echo get_home_url(); ?>movie-details.php?movie-id=${movie.movie_id}`);
         movieClone.style.display = "flex";
         // Append the populated template to the container
         container.appendChild(movieClone);
