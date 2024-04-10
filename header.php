@@ -161,7 +161,7 @@ if (!is_user_logged_in() && !is_login_page()) {
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#signInModal">Sign In</button>
                     </div>
                 <?php } else { ?>
-                    <a href="/logout-action.php" class="btn btn-danger">Log Out</a>
+                    <a href="<?php echo get_home_url(); ?>logout-action.php" class="btn btn-danger">Log Out</a>
                 <?php } ?>
             </div>
         </nav>
