@@ -367,22 +367,28 @@ function logout_user()
 }
 
 // Get home url
-function get_home_url()
-{
+function get_home_url() {
     // Check if HTTPS is used, else fallback to HTTP
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
 
-    // Get the server's host, e.g., localhost or domain.local
+    // Get the server's host, e.g., localhost or domain.com
     $host = $_SERVER['HTTP_HOST'];
 
     // Get the script's directory path, excluding the script filename, to handle subdirectories
-    $script_path = dirname($_SERVER['SCRIPT_NAME']);
+    $script_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
 
-    // Construct and normalize the base URL
-    $base_url = $protocol . '://' . $host . $script_path;
+    // Construct the base URL
+    $base_url = $protocol . '://' . $host;
 
-    // Ensure the base URL ends with a slash for consistency
-    $base_url = rtrim($base_url, '/');
+    // Add script path if it exists and is not the root directory
+    if (!empty($script_path) && $script_path !== '/') {
+        $base_url .= '/' . $script_path . '/';
+    } elseif (strpos($host, '.') !== false) {
+        // Add trailing slash if host is a domain (contains a dot)
+        $base_url .= '/';
+    }
 
     return $base_url;
 }
+
+
