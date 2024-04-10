@@ -300,7 +300,7 @@ function login_user()
         setcookie('logged_in_user_id', $user_id, time() + (86400 * 30), "/");
 
         // Redirect to home page
-        header("Location: /");
+        header("Location: /index.php");
         return;
 
     } else {
@@ -361,7 +361,7 @@ function logout_user()
     unset($_COOKIE['logged_in_user_id']);
 
     // Redirect to home page
-    header("Location: /");
+    header("Location: /index.php");
 
     return;
 }
